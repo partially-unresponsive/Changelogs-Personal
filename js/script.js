@@ -1,6 +1,6 @@
 function showDivisionsWithDelay() {
     const cardDivisions = document.querySelectorAll(".card");
-    const delay = 300;
+    const delay = 10;
 
     cardDivisions.forEach((card, index) => {
         setTimeout(() => {
@@ -28,21 +28,40 @@ document.addEventListener("DOMContentLoaded", () => {
         return Date.now() + Math.floor(Math.random() * 1000);
     };
 
+
+    // Copy-pasted function to format date
+    function padTo2Digits(num) {
+        return num.toString().padStart(2, '0');
+      }
+      
+      function formatDate(date) {
+        return [
+          date.getFullYear(),
+          padTo2Digits(date.getMonth() + 1),
+          padTo2Digits(date.getDate()),
+        ].join('-');
+      }
+
     // Function to handle data submission
     const saveData = () => {
         const taskDescription = textInput.value;
-        const dueDate = dateInput.value;
+        let dueDate = dateInput.value;
 
         // Check if both text and date are entered before saving
-        if (taskDescription.trim() === "" || dueDate === "") {
+        if (taskDescription.trim() === "") {
             swal({
                 title: "Error",
-                text: "Please enter both task and due date!",
+                text: "Please enter a task!",
                 icon: "error",
             });
         } else {
             // Generate a unique numeric ID
             const id = generateNumericID();
+
+            // Set today as the default due date
+            if(dueDate === ""){
+                dueDate = formatDate(new Date());
+            };
 
             // Create a new object representing the to-do task
             const task = {
@@ -94,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(([key]) => key !== "userPreferences")
         .map(([, tasks]) => JSON.parse(tasks));
         const tasksToRender = tasksToDisplay || tasks;
-        tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+        tasks.sort((a, b) => new Date(a.date) - new Date(b.date)).sort((task1, task2) => task2.id - task1.id);
         const todayDate = new Date().toLocaleDateString("en-CA");
 
         // Filter tasks based on the selected section
@@ -319,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "Are you sure?",
             text: "Logging out will delete your profile name and email.",
             icon: "warning",
-            buttons: ["Cancel", "Logout"],
+            buttons: ["Oopsie Woopsie :3", "let me OUTTT"],
             dangerMode: true,
         }).then((willLogout) => {
             if (willLogout) {
@@ -339,8 +358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function getUserPreferences() {
         const storedPreferences = localStorage.getItem("userPreferences");
         const defaultPreferences = {
-            name: "John Doe",
-            email: "john@gmail.com",
+            name: "Sai",
+            email: "kitty@purr.me",
         };
 
         return storedPreferences
